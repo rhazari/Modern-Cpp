@@ -8,13 +8,18 @@ using namespace std;
 class T
 {
 	string _str;
-	int _val;
+	int _ival;
+	double _dval;
 public:
-	T(string str, int val):_str{str}, _val{val}{}
+	T(string str, int val):_str{str}, _ival{val}, _dval{0.}{}
+
+	T(string str, double val):_str{str}, _ival{0}, _dval{val}{}
 
 	string getStr() const {return _str;}
 
-	int getVal() const {return _val;}
+	int getIval() const {return _ival;}
+
+	double getDval() const {return _dval;}
 };
 
 class S
@@ -34,19 +39,19 @@ int main(){
 
 	S _ss {
 		{"value 1", 11},
-		{"value 2", 12},
+		{"value 2", 12.2},
 		{"value 3", 13},
-		{"value 4", 14},
+		{"value 4", 14.},
 	};
 
 	_ss.append({
-		{"value 7", 17},
+		{"value 7", 17.1},
 		{"value 9", 19},
 	}); 
 
 	auto _vv = _ss.getStuff();
 	for(const auto& v: _vv)
-		cout<<v.getStr()<<" "<<v.getVal()<<endl;
+		cout<<v.getStr()<<" "<<v.getIval()<<" "<<v.getDval()<<endl;
 
 	return 0;
 }

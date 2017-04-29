@@ -1,3 +1,4 @@
+#include <memory>
 #include <vector>
 
 using namespace std;
@@ -13,13 +14,15 @@ public:
 };
 
 Container::Container(const size_t size):
-	pimpl (new Impl_(size)){}
+	pimpl (make_unique<Impl_>(size)){}
 
 Container::Container(const Container& other):
-	pimpl (new Impl_(other.pimpl->vec.size()))
+	pimpl (make_unique<Impl_>(other.pimpl->vec.size()))
 	{
 		pimpl->vec = other.pimpl->vec;
 	}
+	
+Container::~Container() = default;
 
 Container& Container::operator=(const Container& other)
 {

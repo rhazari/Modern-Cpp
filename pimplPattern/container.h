@@ -8,6 +8,8 @@ public:
 
 	Container(const Container& other);
 
+	~Container();
+
 	Container& operator=(const Container& other);
 
 	int& operator[] (const int index);

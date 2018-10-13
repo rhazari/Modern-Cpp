@@ -9,13 +9,13 @@ using namespace std;
 class Application{
     mutex mx;
     condition_variable cv;
-    bool m_dataLoaded = false;
+    bool m_dataLoaded;
 public:
-    Application(): m_dataLoaded(true){}
+    Application(): m_dataLoaded(false){}
 
     void loadData(){
-        this_thread::sleep_for(chrono::milliseconds(5000));
         cout<<"Loading Data ..."<<"\n";
+        this_thread::sleep_for(chrono::milliseconds(2000));
         lock_guard<mutex> lk(mx);
         m_dataLoaded = true;
         cv.notify_one();

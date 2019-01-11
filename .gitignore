@@ -4,6 +4,8 @@
 *.sym
 *.map
 *~
+.vscode/
+build*/
 CMakeCache.txt
 CMakeFiles
 CMakeScripts

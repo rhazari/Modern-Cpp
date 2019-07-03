@@ -1,6 +1,7 @@
 #include <condition_variable>
 #include <functional>
 #include <vector>
+#include <future>
 #include <thread>
 #include <queue>
 #include <iostream>
@@ -17,12 +18,17 @@ public:
         stop();
     }
 
-    void enque(Task task) {
+    template<class T>
+    auto enqueue(T task) -> std::future<decltype(task())> {
+        auto wrapper = std::make_shared<std::packaged_task<decltype(task())()>>(std::move(task));
         {
             std::unique_lock<std::mutex> lock{ m_mutex };
-            m_queue.emplace(task);
+            m_queue.emplace([=] {
+                (*wrapper)();
+            });
         }
         m_eventVar.notify_one();
+        return wrapper->get_future();
     }
 
 private:
@@ -72,13 +78,15 @@ private:
 
 int main() {
     MemoryPool pool{ 4 };
-    pool.enque([] {
-        std::cout << "1" << "\n";
+    auto f1 = pool.enqueue([] {
+        return 1;
     });
 
-    pool.enque([] {
-        std::cout << "2" << "\n";
+    auto f2 = pool.enqueue([] {
+        return 2;
     });
+
+    std::cout << f1.get() + f2.get() << "\n";
 
     return 0;
 }

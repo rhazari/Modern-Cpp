@@ -3,6 +3,7 @@
 *.lst
 *.sym
 *.map
+*.gch
 *~
 .vscode/
 build*/

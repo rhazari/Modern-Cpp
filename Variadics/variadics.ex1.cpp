@@ -1,5 +1,4 @@
 // Create a vector of strings from a list of inputs
-
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -35,6 +34,4 @@ int main(){
     for(const auto& v: vec2)
         std::cout<<v<<"\t";
     std::cout<<"\n";
-
-
 }

@@ -9,11 +9,12 @@ public:
 
     template<typename T>
     TypeErased& operator=(T&& value){
-        m_value.reset(new Model<T>(value));
+         _value.reset(new Model<T>(value));
+         return *this;
     }
 
     void printName () const{
-        m_value->printName();
+         _value->printName();
     }
 
 private:
@@ -24,15 +25,15 @@ private:
 
     template<typename T>
     struct Model: Concept {
-        Model(T const& value): m_val(value){}
+        Model(T const& value): _val(value){}
 
         void printName() const override{
-            m_val.printName();
+            _val.printName();
         }
 
-        T m_val;
+        T _val;
     };
 
 private:
-    std::unique_ptr<Concept> m_value;
+    std::unique_ptr<Concept>  _value;
 };

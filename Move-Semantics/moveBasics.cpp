@@ -15,7 +15,6 @@ public:
         for(int k = 0; k < _size; ++k){
             _arr[k] = rand()%_size;
         }
-        
     }
 
     Vector(const Vector& vec){

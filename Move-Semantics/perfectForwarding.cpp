@@ -1,42 +1,71 @@
 #include <iostream>
-#include <vector>
+#include <ctime>
+#include <memory>
+#include <algorithm>
 
-class Foo{
+template <class T>
+class Vector{
+    int _size;
+    std::unique_ptr<T[]> _arr = nullptr;
+
 public:
-    Foo() = default;
-
-    Foo(int i):
-        m_i(i)
-    {}
-
-    Foo(int i, bool b):
-        m_i(i), m_b(b)
-    {}
-
-    Foo(int i, bool b, float f):
-        m_i(i), m_b(b), m_f(f)
-    {}
-
-    int m_i;
-    bool m_b;
-    float m_f;
-};
-
-class Bar{
-public:
-    template<typename ... Args>
-    void AddFoo(Args&& ... args){
-        vec.emplace_back(std::forward<Args>(args) ...);
+    Vector(int size){
+        _size = size;
+        _arr = std::make_unique<T[]>(_size);
+        for(int k = 0; k < _size; ++k){
+            _arr[k] = rand()%_size;
+        }
     }
 
-private:
-    std::vector<Foo> vec; 
+    Vector(const Vector& vec){
+        std::cout<<"Copy Constructor\n";
+        _size = vec._size;
+        _arr = std::make_unique<T[]>(_size);
+        for(int k = 0; k < _size; ++k){
+            _arr[k] = vec._arr[k];
+        }
+    }
+
+    Vector(Vector&& vec) noexcept {
+        std::cout<<"Move Constructor\n";
+        _size = vec._size;
+        _arr = std::move(vec._arr);
+        vec._arr = nullptr;
+    }
+
+    void displayContent(){
+        for(int k = 0; k <_size; ++k){
+            std::cout<<_arr[k]<<" ";
+        }
+        std::cout<<"\n";
+    }
 };
 
-int main(){
+// Reference Collapsing Rules (C++ 11)
+// - T& &   ==> T&
+// - T& &&  ==> T&
+// - T&& &  ==> T&
+// - T&& && ===> T&&
 
-    Bar B;
-    B.AddFoo(1);
-    B.AddFoo(2, true);
-    B.AddFoo(3, false, 3.142);
+// Implementation of std::forward()
+// template <class T>
+// T&& forward(typename remove_reference<T>:: type& arg){
+//     return static_cast<T&&>(arg);
+// }
+
+template <class T, class U>
+Vector<T> relay(U&& arg){
+    return Vector<T>(std::forward<U>(arg));
+}
+
+int main(){
+    std::cout<<"Original Content\n";
+    Vector<int> vec(10);
+    vec.displayContent();
+
+    Vector<int> vec1 = relay<int>(vec);
+    vec1.displayContent();
+
+    Vector<int> vec2 = relay<int>(std::move(vec));
+    vec2.displayContent();
 }

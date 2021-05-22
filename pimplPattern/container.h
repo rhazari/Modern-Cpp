@@ -1,24 +1,22 @@
 #include <memory>
-using namespace std;
 
-class Container
-{
+class Container {
 public:
-	Container(const size_t size);
+    Container(const size_t size);
 
-	Container(const Container& other);
+    Container(const Container& other);
 
-	~Container();
+    ~Container();
 
-	Container& operator=(const Container& other);
+    Container& operator=(const Container& other);
 
-	int& operator[] (const int index);
+    int& operator[] (const int index);
 
-	const int& operator[] (const int index) const;
+    const int& operator[] (const int index) const;
 
 private:
-	class Impl_;
-	unique_ptr<Impl_> pimpl;
+    class _Impl;
+    std::unique_ptr<_Impl> _pimpl;
 };
 
-#include "container_impl.h"
+#include "containerImpl.h"

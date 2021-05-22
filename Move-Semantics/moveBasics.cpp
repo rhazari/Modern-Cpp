@@ -1,62 +1,90 @@
 #include <iostream>
-#include <utility>
+#include <ctime>
+#include <memory>
+#include <algorithm>
 
-class Foo{
+template <class T>
+class Vector{
+    int _size;
+    std::unique_ptr<T[]> _arr = nullptr;
+
 public:
-    Foo(){
-        std::cout<<"Default Constructor"<<"\n";
+    Vector(int size){
+        _size = size;
+        _arr = std::make_unique<T[]>(_size);
+        for(int k = 0; k < _size; ++k){
+            _arr[k] = rand()%_size;
+        }
+        
     }
 
-    Foo(const Foo& rhs){
-        std::cout<<"Copy Constructor"<<"\n";
-        if(rhs.i != nullptr){
-            i = new int(*rhs.i);
+    Vector(const Vector& vec){
+        std::cout<<"Copy Constructor\n";
+        _size = vec._size;
+        _arr = std::make_unique<T[]>(_size);
+        for(int k = 0; k < _size; ++k){
+            _arr[k] = vec._arr[k];
         }
     }
 
-    Foo& operator=(const Foo& rhs){
-        std::cout<<"Copy Assignment"<<"\n";
-        if(rhs.i != nullptr){
-            i = new int(*rhs.i);
+    Vector& operator= (const Vector& vec) {
+        std::cout<<"Copy Assignment\n";
+        if(this != &vec){
+            if(_size != vec._size){
+                _size = vec._size;
+                _arr.reset(new T[_size]);
+            }
+            std::copy(&vec._arr[0], &vec._arr[0] + _size, &_arr[0]);
         }
         return *this;
     }
 
-    Foo& operator=(Foo&& rhs){
-        std::cout<<"Move Assignment"<<"\n";
-        if(rhs.i != nullptr){
-            i = rhs.i;
-            rhs.i = nullptr;
-        }
+    Vector(Vector&& vec) noexcept {
+        std::cout<<"Move Constructor\n";
+        _size = vec._size;
+        _arr = std::move(vec._arr);
+        vec._arr = nullptr;
+    }
+
+    Vector& operator= (Vector&& vec) noexcept {
+        std::cout<<"Move Assignment\n";
+        _size = vec._size;
+        _arr = std::move(vec._arr);
+        vec._arr = nullptr;
         return *this;
     }
 
-
-    ~Foo(){
-        std::cout<<"Destrcutor"<<"\n";
-        if(i != nullptr){
-            delete i;
-
+    void displayContent(){
+        for(int k = 0; k <_size; ++k){
+            std::cout<<_arr[k]<<" ";
         }
+        std::cout<<"\n";
     }
-
-    int* i = nullptr;
 };
 
 int main(){
+    {
+        std::cout<<"Original Content\n";
+        Vector<int> vec(10);
+        vec.displayContent();
 
-    Foo f1;
-    // Copy Assignment
-    {
-        Foo f2;
-        f2.i = new int(10);
-        f1 = f2;	
+        Vector<int> vec1(vec);
+        vec1.displayContent();
+
+        Vector<int> vec2(std::move(vec));
+        vec2.displayContent();
     }
-    std::cout<<"\n";
-    // Move Assignment
+    std::cout<<"\n =========== \n";
     {
-        Foo f2;
-        f2.i = new int(10);
-        f1 = std::move(f2);	
+        std::cout<<"Original Content\n";
+        Vector<int> vec(10);
+        vec.displayContent();
+        Vector<int> vec1(5);
+        vec1 = vec;
+        vec1.displayContent();
+        Vector<int> vec2(5);
+        vec2 = std::move(vec);
+        vec2.displayContent();
     }
 }
+

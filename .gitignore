@@ -5,7 +5,6 @@
 *.map
 *.gch
 *~
-.vscode/
 build*/
 CMakeCache.txt
 CMakeFiles

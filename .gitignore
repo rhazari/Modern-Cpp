@@ -4,6 +4,7 @@
 *.sym
 *.map
 *.gch
+*.dSYM
 *~
 build*/
 CMakeCache.txt

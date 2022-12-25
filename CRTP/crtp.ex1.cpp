@@ -23,6 +23,7 @@ class Rectangle: public Shape<Rectangle>{
 public:
     void draw() {
         std::cout<<"Draw from Rectangle\n";
+        
     }
 };
 

@@ -17,6 +17,8 @@ struct Widget{
     }
 
     Widget& operator =(const Widget& other){
+        // We make a temporary copy here so that any exception during 
+        // this operation will not affect the original object
         Widget temp{other};
         temp.swap(*this);
         return *this;
